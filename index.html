@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS Cloud Practitioner - Founditional (CLF-C02) Certification Exam</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        [data-theme="light"] {
+            /* Light mode colors */
+            --bg-gradient: linear-gradient(45deg, #3498db, #8e44ad);
+            --text-color: #fff;
+            --container-bg: rgba(0, 0, 0, 0.7);
+            --question-bg: linear-gradient(135deg, #fff, #f8f9fa);
+            --question-text: #333;
+            --option-bg: #f8f9fa;
+            --option-hover: #e3f2fd;
+            --option-border: #ddd;
+            --header-color: #2c3e50;
+            --setup-box-bg: rgba(255,255,255,0.1);
+            --setup-box-border: rgba(255,255,255,0.2);
+            --timer-bg: linear-gradient(45deg, #2c3e50, #34495e);
+            --submit-bg: rgba(0,0,0,0.9);
+            /* Updated result box colors for light mode */
+            --result-box-bg: linear-gradient(135deg, #fff, #f8f9fa);
+            --result-box-border: #ddd;
+            --result-box-text: #333;
+        }
+
+        [data-theme="dark"] {
+            /* Dark mode colors */
+            --bg-gradient: linear-gradient(45deg, #1a1a2e, #16213e);
+            --text-color: #e0e0e0;
+            --container-bg: rgba(30, 30, 30, 0.9);
+            --question-bg: linear-gradient(135deg, #2d2d2d, #3a3a3a);
+            --question-text: #e0e0e0;
+            --option-bg: #404040;
+            --option-hover: #4a4a6a;
+            --option-border: #555;
+            --header-color: #8ec5ff;
+            --setup-box-bg: rgba(50,50,50,0.3);
+            --setup-box-border: rgba(100,100,100,0.3);
+            --timer-bg: linear-gradient(45deg, #1f2937, #374151);
+            --submit-bg: rgba(20,20,20,0.9);
+            --result-box-bg: rgba(80, 80, 80, 0.3);
+            --result-box-border: rgba(120, 120, 120, 0.4);
+            --result-box-text: #e0e0e0;
+        }
+        
+        body {
+            font-family: 'Montserrat', 'Roboto', sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            transition: all 0.3s ease;
+        }
+        
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50px;
+            padding: 10px 15px;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 1.2rem;
+            z-index: 1001;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .theme-toggle:hover {
+            background: rgba(138, 68, 173, 0.8);
+            transform: scale(1.1);
+        }
+        
+        .quiz-container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+            background-color: var(--container-bg);
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            margin-top: 30px;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+        
+        h1 {
+            color: var(--text-color);
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .page {
+            display: none;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        .setup-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 40px 0;
+            gap: 30px;
+        }
+        
+        .setup-box {
+            background: var(--setup-box-bg);
+            padding: 30px;
+            border-radius: 15px;
+            min-width: 400px;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--setup-box-border);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .setup-box:hover {
+            background: rgba(138, 68, 173, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 24px rgba(138, 68, 173, 0.4);
+        }
+        
+        .setup-box h3 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--text-color);
+        }
+        
+        select {
+            padding: 15px;
+            margin: 10px;
+            font-size: 1.1rem;
+            background-color: #ecf0f1;
+            color: #333;
+            border: none;
+            border-radius: 8px;
+            width: 200px;
+            cursor: pointer;
+        }
+        
+        button {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            background: linear-gradient(45deg, #2980b9, #3498db);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 20px 10px;
+            font-weight: 600;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        
+        button:hover {
+            background: linear-gradient(45deg, #8e44ad, #9b59b6);
+            transform: scale(1.05);
+        }
+        
+        button:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .timer-box {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--timer-bg);
+            padding: 20px;
+            border-radius: 10px;
+            color: white;
+            font-size: 1.2rem;
+            width: 200px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+            z-index: 1000;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .timer-box:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+        }
+        
+        .timer-box.minimized {
+            width: auto;
+            padding: 15px;
+        }
+        
+        .timer-box.minimized .timer-content {
+            display: none;
+        }
+        
+        .timer-box.minimized::after {
+            content: "⏰";
+            font-size: 1.5rem;
+        }
+        
+        .timer {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+        
+        .question {
+            background: var(--question-bg);
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            text-align: left;
+            color: var(--question-text);
+        }
+        
+        .question:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.3);
+        }
+        
+        .question h3 {
+            color: var(--header-color);
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .option {
+            display: block;
+            padding: 15px;
+            margin: 10px 0;
+            border: 2px solid var(--option-border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--option-bg);
+            color: var(--question-text);
+        }
+        
+        .option:hover {
+            background: var(--option-hover);
+            border-color: #3498db;
+        }
+        
+        .option input[type="checkbox"], .option input[type="radio"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+        
+        .option.selected {
+            background: #3498db;
+            color: white;
+            border-color: #2980b9;
+        }
+        
+        .warning {
+            color: #e74c3c;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .result-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            margin: 30px 0;
+            gap: 20px;
+        }
+        
+        .result-box {
+            background: var(--result-box-bg);
+            padding: 30px;
+            border-radius: 15px;
+            min-width: 250px;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--result-box-border);
+            flex: 1;
+            max-width: 300px;
+            color: var(--result-box-text);
+        }
+        
+        .result-box h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--result-box-text);
+        }
+        
+        .success {
+            color: #2ecc71;
+            font-weight: bold;
+        }
+        
+        .failure {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        
+        .review-question {
+            background: var(--question-bg);
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            color: var(--question-text);
+            text-align: left;
+        }
+        
+        .user-correct-label {
+            color: var(--question-text);
+            font-weight: bold;
+        }
+        
+        .user-correct-answer {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        
+        .user-wrong-label {
+            color: var(--question-text);
+            font-weight: bold;
+        }
+        
+        .user-wrong-answer {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        
+        .correct-answer-label {
+            color: var(--question-text);
+            font-weight: bold;
+        }
+        
+        .correct-answer-text {
+            color: #3498db;
+            font-weight: bold;
+        }
+        
+        .quiz-questions {
+            text-align: left;
+            max-height: none;
+            overflow-y: visible;
+            padding: 0;
+            margin: 0;
+        }
+        
+        /* Updated submit container - no longer fixed */
+        .submit-container {
+            background: var(--submit-bg);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .motivational-message {
+            font-size: 1.3rem;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 10px;
+            background: var(--result-box-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--result-box-border);
+            color: var(--result-box-text);
+        }
+
+        .statistics-box {
+            background: var(--result-box-bg);
+            border: 1px solid var(--result-box-border);
+            color: var(--result-box-text);
+        }
+
+        .statistics-box h3 {
+            color: var(--result-box-text);
+        }
+    </style>
+</head>
+<body data-theme="light">
+    <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+
+    <!-- Page 1: Setup -->
+    <div id="page1" class="page active">
+        <div class="quiz-container">
+            <h1>AWS Cloud Practitioner - Founditional (CLF-C02) Certification Exam</h1>
+            <p style="font-size: 1.2rem; margin-bottom: 40px;">Prepare for your AWS certification now!</p>
+            
+            <div class="setup-container">
+                <div class="setup-box">
+                    <h3>Number of Questions</h3>
+                    <select id="questionCount">
+                        <option value="5">5 Questions</option>
+                        <option value="10">10 Questions</option>
+                        <option value="15">15 Questions</option>
+                        <option value="30">30 Questions</option>
+                        <option value="50">50 Questions</option>
+                        <option value="65" selected>65 Questions</option>
+                        <option value="75">75 Questions</option>
+                    </select>
+                </div>
+                
+                <div class="setup-box">
+                    <h3>Time Limit</h3>
+                    <select id="timeLimit">
+                        <option value="30">30 Minutes</option>
+                        <option value="60">60 Minutes</option>
+                        <option value="90" selected>90 Minutes</option>
+                        <option value="120">120 Minutes</option>
+                        <option value="150">150 Minutes</option>
+                        <option value="180">180 Minutes</option>
+                        <option value="210">210 Minutes</option>
+                    </select>
+                </div>
+            </div>
+            
+            <button onclick="startQuiz()" style="font-size: 1.5rem; padding: 20px 40px;">Start Exam</button>
+        </div>
+    </div>
+
+    <!-- Page 2: Quiz -->
+    <div id="page2" class="page">
+        <div class="timer-box" id="timerBox" onclick="toggleTimer()">
+            <div class="timer-content">
+                <div>Time Remaining</div>
+                <div class="timer" id="timer">00:00</div>
+            </div>
+        </div>
+        
+        <div style="width: 90%; max-width: 1200px; margin: 0 auto; padding: 20px; margin-top: 30px; margin-bottom: 30px;">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h1>AWS Cloud Practitioner - Founditional (CLF-C02) Certification Exam</h1>
+                <div id="questionInfo" style="font-size: 1.2rem; color: var(--text-color);"></div>
+            </div>
+            
+            <div class="quiz-questions" id="quizQuestions"></div>
+            
+            <!-- Submit button now placed after questions, not fixed -->
+            <div class="submit-container">
+                <div id="warningMessage" class="warning" style="display: none;"></div>
+                <button onclick="submitQuiz()" style="font-size: 1.3rem; padding: 15px 35px;">Submit Exam</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 3: Results -->
+    <div id="page3" class="page">
+        <div class="quiz-container">
+            <h1>Exam Results</h1>
+            
+            <div class="result-container">
+                <div class="result-box">
+                    <h3>Time Completion</h3>
+                    <p id="timeResult"></p>
+                </div>
+                
+                <div class="result-box">
+                    <h3>Your Score</h3>
+                    <p id="scoreResult" style="font-size: 2rem;"></p>
+                    <p id="passResult"></p>
+                </div>
+                
+                <div class="result-box">
+                    <h3>Percentage</h3>
+                    <p id="percentageResult" style="font-size: 2rem;"></p>
+                </div>
+            </div>
+
+            <div id="motivationalMessage" class="motivational-message"></div>
+            
+            <div class="result-box statistics-box" style="width: 90%; margin: 20px auto;">
+                <h3>Statistics</h3>
+                <p id="correctCount"></p>
+                <p id="wrongCount"></p>
+            </div>
+            
+            <div style="text-align: left; margin-top: 30px;">
+                <h2 style="text-align: center; margin-bottom: 30px;">Detailed Review</h2>
+                <div id="reviewQuestions"></div>
+            </div>
+            
+            <button onclick="restartQuiz()" style="font-size: 1.3rem; padding: 15px 35px; margin-top: 30px;">Retake Exam</button>
+        </div>
+    </div>
+
+    <script>
+        // Theme toggle functionality
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            body.setAttribute('data-theme', newTheme);
+        }
+
+        // Timer toggle functionality
+        function toggleTimer() {
+            const timerBox = document.getElementById('timerBox');
+            timerBox.classList.toggle('minimized');
+        }
+
+        // Questions in text format
+        const questionsText = `
+Q: A company plans to use an Amazon Snowball Edge device to transfer files to the AWS Cloud.Which activities related to a Snowball Edge device are available to the company at no cost?
+A. Use of the Snowball Edge appliance for a 10-day period
+B. The transfer of data out of Amazon S3 and to the Snowball Edge appliance
+*C. The transfer of data from the Snowball Edge appliance into Amazon S3 
+D. Daily use of the Snowball Edge appliance after 10 days
+
+
+Q: A company has deployed applications on Amazon EC2 instances. The company needs to assess application vulnerabilities and must identify infrastructure deployments that do not meet best practices.Which AWS service can the company use to meet these requirements?
+A. AWS Trusted Advisor
+*B. Amazon Inspector 
+C. AWS Config
+D. Amazon GuardDuty
+
+
+Q: A company has a centralized group of users with large file storage requirements that have exceeded the space available on premises. The company wants to extend its file storage capabilities for this group while retaining the performance benefit of sharing content locally.What is the MOST operationally efficient AWS solution for this scenario?
+A. Create an Amazon S3 bucket for each user. Mount each bucket by using an S3 file system mounting utility.
+*B. Configure and deploy an AWS Storage Gateway file gateway. Connect each user's workstation to the file gateway. 
+C. Move each user's working environment to Amazon WorkSpaces. Set up an Amazon WorkDocs account for each user.
+D. Deploy an Amazon EC2 instance and attach an Amazon Elastic Block Store (Amazon EBS) Provisioned IOPS volume. Share the EBS volume directly with the users.
+
+
+Q: According to security best practices, how should an Amazon EC2 instance be given access to an Amazon S3 bucket?
+A. Hard code an IAM user's secret key and access key directly in the application, and upload the file.
+B. Store the IAM user's secret key and access key in a text file on the EC2 instance, read the keys, then upload the file.
+*C. Have the EC2 instance assume a role to obtain the privileges to upload the file. 
+D. Modify the S3 bucket policy so that any service can upload to it at any time.
+
+
+Q: Which option is a customer responsibility when using Amazon DynamoDB under the AWS Shared Responsibility Model?
+A. Physical security of DynamoDB
+B. Patching of DynamoDB
+*C. Access to DynamoDB tables 
+D. Encryption of data at rest in DynamoDB
+
+
+Q: Which option is a perspective that includes foundational capabilities of the AWS Cloud Adoption Framework (AWS CAF)?
+A. Sustainability
+B. Performance efficiency
+*C. Governance 
+D. Reliability
+
+
+Q: A company is running and managing its own Docker environment on Amazon EC2 instances. The company wants an alternative to help manage cluster size, scheduling, and environment maintenance.Which AWS service meets these requirements?
+A. AWS Lambda
+B. Amazon RDS
+*C. AWS Fargate 
+D. Amazon Athena
+
+
+Q: A company wants to run a NoSQL database on Amazon EC2 instances.Which task is the responsibility of AWS in this scenario?
+A. Update the guest operating system of the EC2 instances.
+B. Maintain high availability at the database layer.
+*C. Patch the physical infrastructure that hosts the EC2 instances. 
+D. Configure the security group firewall.
+
+
+Q: Which AWS services or tools can identify rightsizing opportunities for Amazon EC2 instances? (Choose two.)
+*A. AWS Cost Explorer 
+B. AWS Billing Conductor
+C. Amazon CodeGuru
+D. Amazon SageMaker
+*E. AWS Compute Optimizer 
+
+
+Q: Which of the following are benefits of using AWS Trusted Advisor? (Choose two.)
+*A. Providing high-performance container orchestration
+*B. Creating and rotating encryption keys
+*C. Detecting underutilized resources to save costs 
+*D. Improving security by proactively monitoring the AWS environment 
+E. Implementing enforced tagging across AWS resources
+
+        `;
+
+        let questions = [];
+
+        function parseQuestions() {
+            const questionBlocks = questionsText.trim().split('\n\n').filter(block => block.trim());
+            
+            questionBlocks.forEach(block => {
+                const lines = block.split('\n').filter(line => line.trim());
+                if (lines.length === 0) return;
+                
+                const questionLine = lines[0];
+                if (!questionLine.startsWith('Q:')) return;
+                
+                const question = questionLine.substring(2).trim();
+                const options = [];
+                const correct = [];
+                
+                for (let i = 1; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    if (line.match(/^[A-Z]\./)) {
+                        const optionText = line.substring(2).trim();
+                        options.push(optionText);
+                    } else if (line.match(/^\*[A-Z]\./)) {
+                        const optionText = line.substring(3).trim();
+                        options.push(optionText);
+                        correct.push(options.length - 1);
+                    }
+                }
+                
+                questions.push({
+                    question: question,
+                    options: options,
+                    correct: correct,
+                    isMultipleChoice: correct.length > 1
+                });
+            });
+        }
+
+        // Parse questions on load
+        parseQuestions();
+
+        let selectedQuestions = [];
+        let userAnswers = {};
+        let startTime;
+        let timerInterval;
+        let timeLimit;
+
+        function startQuiz() {
+            const questionCount = parseInt(document.getElementById('questionCount').value);
+            timeLimit = parseInt(document.getElementById('timeLimit').value);
+            
+            // Shuffle and select questions
+            const shuffled = [...questions].sort(() => 0.5 - Math.random());
+            selectedQuestions = shuffled.slice(0, Math.min(questionCount, questions.length));
+            
+            // Shuffle questions again for random order
+            selectedQuestions = selectedQuestions.sort(() => 0.5 - Math.random());
+            
+            // Reset user answers
+            userAnswers = {};
+            
+            // Set up timer
+            startTime = new Date();
+            startTimer();
+            
+            // Generate quiz HTML
+            generateQuizHTML();
+            
+            // Show quiz page
+            showPage('page2');
+        }
+
+        function generateQuizHTML() {
+            const container = document.getElementById('quizQuestions');
+            const info = document.getElementById('questionInfo');
+            
+            info.textContent = `Questions: ${selectedQuestions.length} | Time: ${timeLimit} minutes`;
+            
+            let html = '';
+            selectedQuestions.forEach((q, index) => {
+                const inputType = q.isMultipleChoice ? 'checkbox' : 'radio';
+                const correctCount = q.correct.length;
+                let selectText;
+                
+                if (correctCount === 1) {
+                    selectText = '(Select one answer)';
+                } else {
+                    selectText = `(Select ${correctCount} answers)`;
+                }
+                
+                html += `
+                    <div class="question" id="question${index}">
+                        <h3>Q${index + 1}: ${q.question}</h3>
+                        <p style="color: #7f8c8d; font-style: italic; margin-bottom: 15px;">${selectText}</p>
+                        ${q.options.map((option, optIndex) => `
+                            <label class="option">
+                                <input type="${inputType}" name="question${index}" id="q${index}_${optIndex}" onchange="handleOptionChange(${index}, ${optIndex}, '${inputType}')">
+                                <span>${String.fromCharCode(65 + optIndex)}. ${option}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function handleOptionChange(questionIndex, optionIndex, inputType) {
+            if (!userAnswers[questionIndex]) {
+                userAnswers[questionIndex] = [];
+            }
+            
+            const input = document.getElementById(`q${questionIndex}_${optionIndex}`);
+            const option = input.parentElement;
+            const question = selectedQuestions[questionIndex];
+            const requiredAnswers = question.correct.length;
+            
+            if (inputType === 'radio') {
+                // For radio buttons, only one answer
+                userAnswers[questionIndex] = input.checked ? [optionIndex] : [];
+                
+                // Update visual feedback for all options
+                const allOptions = document.querySelectorAll(`input[name="question${questionIndex}"]`);
+                allOptions.forEach(inp => {
+                    inp.parentElement.classList.remove('selected');
+                });
+                if (input.checked) {
+                    option.classList.add('selected');
+                }
+            } else {
+                // For checkboxes, enforce exact number of selections
+                if (input.checked) {
+                    // Check if we're at the limit
+                    if (userAnswers[questionIndex].length >= requiredAnswers) {
+                        // Uncheck the oldest selection
+                        const oldestIndex = userAnswers[questionIndex].shift();
+                        const oldestInput = document.getElementById(`q${questionIndex}_${oldestIndex}`);
+                        oldestInput.checked = false;
+                        oldestInput.parentElement.classList.remove('selected');
+                    }
+                    
+                    if (!userAnswers[questionIndex].includes(optionIndex)) {
+                        userAnswers[questionIndex].push(optionIndex);
+                    }
+                    option.classList.add('selected');
+                } else {
+                    userAnswers[questionIndex] = userAnswers[questionIndex].filter(i => i !== optionIndex);
+                    option.classList.remove('selected');
+                }
+            }
+        }
+
+        function startTimer() {
+            const endTime = new Date(startTime.getTime() + timeLimit * 60000);
+            
+            timerInterval = setInterval(() => {
+                const now = new Date();
+                const remaining = endTime - now;
+                
+                if (remaining <= 0) {
+                    clearInterval(timerInterval);
+                    submitQuiz();
+                    return;
+                }
+                
+                const minutes = Math.floor(remaining / 60000);
+                const seconds = Math.floor((remaining % 60000) / 1000);
+                
+                document.getElementById('timer').textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function submitQuiz() {
+            // Check if all questions have the required number of answers
+            const unanswered = [];
+            const incomplete = [];
+            
+            for (let i = 0; i < selectedQuestions.length; i++) {
+                const question = selectedQuestions[i];
+                const userAnswer = userAnswers[i] || [];
+                const requiredCount = question.correct.length;
+                
+                if (userAnswer.length === 0) {
+                    unanswered.push(i + 1);
+                } else if (userAnswer.length < requiredCount) {
+                    incomplete.push(i + 1);
+                }
+            }
+            
+            if (unanswered.length > 0 || incomplete.length > 0) {
+                const warning = document.getElementById('warningMessage');
+                let message = '';
+                
+                if (unanswered.length > 0) {
+                    message += `Please answer questions: ${unanswered.join(', ')}. `;
+                }
+                if (incomplete.length > 0) {
+                    message += `Please complete questions (select required number of answers): ${incomplete.join(', ')}.`;
+                }
+                
+                warning.innerHTML = message;
+                warning.style.display = 'block';
+                
+                // Scroll to first problematic question
+                const firstProblem = unanswered.length > 0 ? unanswered[0] - 1 : incomplete[0] - 1;
+                document.getElementById(`question${firstProblem}`).scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+                return;
+            }
+            
+            clearInterval(timerInterval);
+            calculateResults();
+            showPage('page3');
+        }
+
+        function calculateResults() {
+            const endTime = new Date();
+            const timeTaken = Math.floor((endTime - startTime) / 60000);
+            
+            let correctAnswers = 0;
+            let wrongAnswers = 0;
+            
+            selectedQuestions.forEach((q, index) => {
+                const userAnswer = userAnswers[index] || [];
+                const correctAnswer = q.correct;
+                
+                // Strict matching: must have exactly the same answers
+                const isCorrect = userAnswer.length === correctAnswer.length && 
+                                  userAnswer.every(val => correctAnswer.includes(val)) &&
+                                  correctAnswer.every(val => userAnswer.includes(val));
+                
+                if (isCorrect) {
+                    correctAnswers++;
+                } else {
+                    wrongAnswers++;
+                }
+            });
+            
+            // Calculate initial score
+            const initialScore = (correctAnswers / selectedQuestions.length) * 1000;
+            
+            // Round to nearest 5
+            const score = Math.round(initialScore / 5) * 5;
+            
+            // Calculate percentage based on rounded score
+            const percentage = Math.round(score / 10);
+            
+            const passed = score >= 700;
+            
+            // Display results
+            document.getElementById('timeResult').textContent = 
+                `You completed the exam in ${timeTaken} minutes out of ${timeLimit} minutes.`;
+            
+            document.getElementById('scoreResult').textContent = `${score}/1000`;
+            document.getElementById('passResult').innerHTML = 
+                passed ? '<span class="success">PASS!</span>' : '<span class="failure">FAIL!</span>';
+            
+            document.getElementById('percentageResult').textContent = `${percentage}%`;
+            document.getElementById('correctCount').textContent = `Correct answers: ${correctAnswers}`;
+            document.getElementById('wrongCount').textContent = `Wrong answers: ${wrongAnswers}`;
+            
+            // Motivational message
+            const motivationalMsg = document.getElementById('motivationalMessage');
+            if (passed) {
+                motivationalMsg.innerHTML = '<div class="success">🎉 Congratulations! You passed the test, and it\'s clear that you\'re ready for the real exam! Good luck!</div>';
+            } else {
+                motivationalMsg.innerHTML = '<div class="failure">😞 You didn\'t pass this time. Don\'t give up — review and try again!</div>';
+            }
+            
+            // Generate review
+            generateReview();
+        }
+
+        function generateReview() {
+            const container = document.getElementById('reviewQuestions');
+            let html = '';
+            
+            selectedQuestions.forEach((q, index) => {
+                const userAnswer = userAnswers[index] || [];
+                const correctAnswer = q.correct;
+                const isCorrect = userAnswer.length === correctAnswer.length && 
+                                  userAnswer.every(val => correctAnswer.includes(val)) &&
+                                  correctAnswer.every(val => userAnswer.includes(val));
+                
+                const userAnswerText = userAnswer.length > 0 ? 
+                    userAnswer.map(i => `${String.fromCharCode(65 + i)}. ${q.options[i]}`).join(', ') : 'No answer';
+                const correctAnswerText = correctAnswer.map(i => `${String.fromCharCode(65 + i)}. ${q.options[i]}`).join(', ');
+                
+                html += `
+                    <div class="review-question">
+                        <h4>Q${index + 1}: ${q.question}</h4>
+                        ${q.options.map((option, optIndex) => `
+                            <div>${String.fromCharCode(65 + optIndex)}. ${option}</div>
+                        `).join('')}
+                        
+                        <div style="margin-top: 15px;">
+                            <div>
+                                <span class="${isCorrect ? 'user-correct-label' : 'user-wrong-label'}">
+                                    Your answer:
+                                </span>
+                                <span class="${isCorrect ? 'user-correct-answer' : 'user-wrong-answer'}">
+                                    ${userAnswerText}
+                                </span>
+                            </div>
+                            <div style="margin-top: 8px;">
+                                <span class="correct-answer-label">The correct answer:</span>
+                                <span class="correct-answer-text">${correctAnswerText}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function restartQuiz() {
+            clearInterval(timerInterval);
+            showPage('page1');
+        }
+
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+        }
+    </script>
+</body>
+</html>
